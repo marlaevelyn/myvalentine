@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Be My Valentine? 💕</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #ffeef8 0%, #ffe0f0 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #ff1493;
+            margin: 0;
+            text-align: center;
+            text-shadow: none;
+        }
+        
+        #questionContainer {
+            position: absolute;
+            top: 2rem;
+            left: 200px;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 2rem;
+            position: relative;
+        }
+
+        .bubble {
+            padding: 1.5rem 3rem;
+            font-size: 1.5rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .bubble:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        #yes-btn {
+            background: linear-gradient(135deg, #ff6b9d 0%, #ff1493 100%);
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        #no-btn {
+            background: linear-gradient(135deg, #a0a0a0 0%, #808080 100%);
+            color: white;
+            position: fixed;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+        }
+
+        .emoji {
+            font-size: 8rem;
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        #sadFace {
+            font-size: 3rem;
+        }
+        
+        #finalImage {
+            display: none;
+            max-width: 500px;
+            border-radius: 0;
+            box-shadow: none;
+            filter: none;
+            background: transparent;
+            margin-top: 4rem;
+        }
+        
+        #restartBtn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+            background: #ffeef8;
+            color: #ff1493;
+            border: 2px solid #ff1493;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+            z-index: 1000;
+        }
+        
+        #restartBtn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        
+        #character {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            width: 150px;
+            height: auto;
+            z-index: 10;
+        }
+        
+        .speech-bubble {
+            position: relative;
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            width: calc(100vw - 250px);
+            max-width: none;
+        }
+        
+        .speech-bubble:before {
+            content: "";
+            position: absolute;
+            left: -20px;
+            top: 30px;
+            width: 0;
+            height: 0;
+            border-top: 15px solid transparent;
+            border-bottom: 15px solid transparent;
+            border-right: 20px solid white;
+        }
+
+        .dog-container {
+            position: fixed;
+            bottom: 2rem;
+            left: 2rem;
+            display: none;
+            align-items: flex-start;
+            gap: 1rem;
+            z-index: 15;
+        }
+
+        #dogImage {
+            width: 150px;
+            height: auto;
+            display: block;
+            background: transparent;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .floating-heart {
+            display: inline-block;
+            animation: float 2s ease-in-out infinite;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <img id="character" src="girl.png" alt="Character">
+    <div id="questionContainer">
+        <div class="speech-bubble">
+            <h1>Will you be my Valentine? 💝</h1>
+        </div>
+    </div>
+    
+    <div class="button-container" id="buttonContainer">
+        <button class="bubble" id="yes-btn">Yes! 💕</button>
+        <button class="bubble" id="no-btn">No</button>
+    </div>
+
+    <div class="emoji" id="happyFace">😊💖</div>
+    <div class="emoji" id="sadFace">Wrong answer 😭</div>
+    <img id="finalImage" src="valentine.png" alt="Valentine">
+    <h1 id="finalTitle" style="display: none; position: absolute; top: 2rem; left: 50%; transform: translateX(-50%); font-size: 4rem; color: #ff1493; text-align: center; z-index: 20; text-shadow: none;"></h1>
+
+    <button id="restartBtn">Restart</button>
+
+
+    <div id="dogContainer" class="dog-container">
+        <img id="dogImage" src="dog.png" alt="Dog">
+        <div class="speech-bubble">Wait, I thought you were my valentine?!</div>
+    </div>
+
+    <script>
+        const noBtn = document.getElementById('no-btn');
+        const yesBtn = document.getElementById('yes-btn');
+        const buttonContainer = document.getElementById('buttonContainer');
+        const happyFace = document.getElementById('happyFace');
+        const sadFace = document.getElementById('sadFace');
+        const character = document.getElementById('character');
+
+        // Movement variables
+        let x = window.innerWidth / 2;
+        let y = window.innerHeight / 2;
+        let velocityX = 2;
+        let velocityY = 2;
+        let speed = 2;
+        let isMoving = true;
+        
+        // Yes button progression
+        let yesClickCount = 0;
+        const questions = [
+            "Will you be my Valentine? 💝",
+            "Are you sure? Like really sure? 💕",
+            "Are you absolutely positively sure? 💖",
+            "Are you absolutely without a doubt positively absolutely certain? 💗",
+            "What about if I was a worm? Like a really icky slimey worm 🪱",
+            "What if frozen blueberries 🫐 developed the ability to talk and understood all your old movie references and could tell you about the phases of gravitational waves and laughed at all your jokes - even the bad ones - and wanted you to be *their* valentine? 👀"
+        ];
+        const title = document.querySelector('h1');
+        const questionContainer = document.getElementById('questionContainer');
+        const finalImage = document.getElementById('finalImage');
+        const finalTitle = document.getElementById('finalTitle');
+        const dogContainer = document.getElementById('dogContainer');
+        const scales = [1, 1.5, 2, 2.8, 3.8, 5];
+
+        // Continuously move the No button
+        function moveNoButton() {
+            if (!isMoving) return;
+
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            const btnWidth = noBtn.offsetWidth;
+            const btnHeight = noBtn.offsetHeight;
+
+            // Update position
+            x += velocityX;
+            y += velocityY;
+
+            // Bounce off edges
+            if (x <= 0 || x >= windowWidth - btnWidth) {
+                velocityX = -velocityX;
+                speed += 0.8; // Increase speed faster on bounce
+            }
+            if (y <= 0 || y >= windowHeight - btnHeight) {
+                velocityY = -velocityY;
+                speed += 0.8; // Increase speed faster on bounce
+            }
+
+            // Update velocity magnitude while maintaining direction
+            const angle = Math.atan2(velocityY, velocityX);
+            velocityX = Math.cos(angle) * speed;
+            velocityY = Math.sin(angle) * speed;
+
+            // Apply position
+            noBtn.style.left = x + 'px';
+            noBtn.style.top = y + 'px';
+
+            requestAnimationFrame(moveNoButton);
+        }
+
+        // Start moving when page loads
+        moveNoButton();
+
+        // Show sad face when No is clicked
+        noBtn.addEventListener('click', () => {
+            isMoving = false;
+            buttonContainer.classList.add('hidden');
+            questionContainer.style.display = 'none';
+            character.style.display = 'none';
+            sadFace.classList.add('show');
+            
+            // Reset after 2 seconds
+            setTimeout(() => {
+                buttonContainer.classList.remove('hidden');
+                questionContainer.style.display = 'flex';
+                character.style.display = 'block';
+                sadFace.classList.remove('show');
+                speed = 2;
+                velocityX = 2;
+                velocityY = 2;
+                isMoving = true;
+                moveNoButton();
+            }, 2000);
+        });
+
+        // Show happy face when Yes is clicked
+        yesBtn.addEventListener('click', () => {
+            yesClickCount++;
+            
+            if (yesClickCount < 6) {
+                // Update question
+                title.textContent = questions[yesClickCount];
+                
+                // Grow the yes button
+                yesBtn.style.transform = `scale(${scales[yesClickCount]})`;
+            } else {
+                // Final acceptance!
+                isMoving = false;
+                buttonContainer.classList.add('hidden');
+                noBtn.style.display = 'none';
+                character.src = 'dog.png';
+                character.style.top = 'auto';
+                character.style.bottom = '1rem';
+                character.style.opacity = '0';
+                title.textContent = "Wait, I thought you were my valentine?!";
+                questionContainer.style.top = 'auto';
+                questionContainer.style.bottom = '6rem';
+                questionContainer.style.opacity = '0';
+                finalTitle.innerHTML = "Ok fine, I'll be your valentine <span class='floating-heart'>💕</span>";
+                finalTitle.style.display = 'block';
+                finalImage.style.display = 'block';
+                
+                // Fade in dog and speech bubble after 3 seconds
+                setTimeout(() => {
+                    character.style.opacity = '1';
+                    character.style.animation = 'fadeIn 1s ease-in';
+                    questionContainer.style.display = 'flex';
+                    questionContainer.style.opacity = '1';
+                    questionContainer.style.animation = 'fadeIn 1s ease-in';
+                }, 1000);
+            }
+        });
+        
+        // Restart button functionality
+        const restartBtn = document.getElementById('restartBtn');
+        restartBtn.addEventListener('click', () => {
+            location.reload();
+        });
+    </script>
+</body>
+</html>
