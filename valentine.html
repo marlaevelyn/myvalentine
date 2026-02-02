@@ -226,6 +226,14 @@
             color: #333;
             max-width: 500px;
         }
+
+        body.mobile-blocked > *:not(#mobileMessage) {
+            display: none !important;
+        }
+
+        body.mobile-blocked {
+            overflow: hidden !important;
+        }
     </style>
 </head>
 <body>
@@ -259,26 +267,35 @@
     </div>
 
     <script>
-        // Mobile device detection
+        // Mobile device detection - run immediately
         function isMobileDevice() {
-            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
-                   (window.innerWidth <= 768 && window.innerHeight <= 1024);
+            // Check user agent
+            const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            // Check screen size
+            const isSmallScreen = window.innerWidth <= 768 || (window.innerWidth <= 1024 && window.innerHeight <= 768);
+            // Check touch capability
+            const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+            
+            return isMobileUA || (isSmallScreen && isTouchDevice);
         }
 
-        if (isMobileDevice()) {
-            document.getElementById('mobileMessage').style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-            // Hide all main content
-            const mainContent = document.querySelectorAll('body > *:not(#mobileMessage)');
-            mainContent.forEach(el => {
-                if (el.id !== 'mobileMessage') {
-                    el.style.display = 'none';
-                }
-            });
+        const isMobile = isMobileDevice();
+        
+        if (isMobile) {
+            document.body.classList.add('mobile-blocked');
+            const mobileMsg = document.getElementById('mobileMessage');
+            if (mobileMsg) {
+                mobileMsg.style.display = 'flex';
+            }
         } else {
-            document.getElementById('mobileMessage').style.display = 'none';
+            const mobileMsg = document.getElementById('mobileMessage');
+            if (mobileMsg) {
+                mobileMsg.style.display = 'none';
+            }
         }
 
+        // Only run the rest of the script if not on mobile
+        if (!isMobile) {
         const noBtn = document.getElementById('no-btn');
         const yesBtn = document.getElementById('yes-btn');
         const buttonContainer = document.getElementById('buttonContainer');
@@ -414,6 +431,7 @@
         restartBtn.addEventListener('click', () => {
             location.reload();
         });
+        } // End of if (!isMobile) check
     </script>
 </body>
 </html>
